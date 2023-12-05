@@ -41,9 +41,7 @@ TB_JPN <- TBnot %>%
     age_gp %in% c("40-59","60+") ~ "40-60+")) %>% 
   mutate(acats = factor(acats, levels=c('All', '0-39', '40-60+'))) %>% 
   mutate(age_gp = factor(age_gp))
-
-#display.brewer.all(colorblindFriendly = TRUE)
-#display.brewer.pal(5,"RdYlBu")
+rm(TBnot, TBprev)
 
 acats_lab1 <- c("All age groups",
                 "0-19 and 20-39 years old",
@@ -86,7 +84,8 @@ Fnot <- ggplot(data = filter(TB_JPN, measure == "not"), mapping = aes(x=year, y=
               colour='black', linetype=2, linewidth=0.2, alpha=0.3) +
   scale_shape_manual(values=c(23, 25, 22, 24, 21)) +
   scale_x_continuous("Year", expand=c(0, 0), limits = c(1949.5, 1980.5), breaks = seq(1950,1980,5)) +
-  scale_y_continuous(expand=c(0, 0), limits=c(0,1250), breaks = seq(0,1200,200)) +
+  scale_y_continuous(expand=c(0, 0), breaks = seq(0,1200,200)) +
+  coord_cartesian(ylim = c(0,1250)) +
   scale_colour_grey() +
   scale_fill_grey() +
   labs(shape="Age group", y=expression(atop(bold("TB notifications"),atop(italic("Rate per 100,000 inhabitants"))))) +
@@ -96,7 +95,19 @@ Fnot <- ggplot(data = filter(TB_JPN, measure == "not"), mapping = aes(x=year, y=
 
 Fig <- Fprev / Fnot
 
+png("plots/TBprev.png", units="cm", width=20, height=9, res=300, pointsize=2)
+print(Fprev)
+dev.off()
+
+png("plots/TBnot.png", units="cm", width=20, height=9, res=300, pointsize=2)
+print(Fnot)
+dev.off()
+
 png("plots/TB_JPN.png", units="cm", width=20, height=18, res=300, pointsize=2)
+print(Fig)
+dev.off()
+
+pdf("plots/TB_JPN.pdf", width=10, height=9, pointsize=2)
 print(Fig)
 dev.off()
 
